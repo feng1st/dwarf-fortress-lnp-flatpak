@@ -1,14 +1,13 @@
 app-id: com.bay12games.DwarfFortress
-runtime: org.freedesktop.Platform
-runtime-version: "18.08"
-sdk: org.freedesktop.Sdk
+runtime: org.kde.Platform
+runtime-version: "5.15-22.08"
+sdk: org.kde.Sdk
 command: launcher.sh
 finish-args:
   - --device=dri
   - --socket=pulseaudio
   - --socket=x11
   - --share=network
-  - --talk-name=org.freedesktop.Notifications
   - --allow=devel # required for setarch
 build-options:
   no-debuginfo: true
@@ -23,127 +22,85 @@ cleanup:
   - "*.la"
 
 modules:
+  # XTERM dependency
+  - name: libXmu
+    sources:
+      - type: archive
+        url: https://www.x.org/releases/individual/lib/libXmu-1.1.2.tar.bz2
+        sha512: eba4e3d10f7d75ba8464881fb69f295a89774a4b37793197d75f3312e3a342b2df8b7e13e3f5c887962704329b5347ff2f3395e229af9dadf46a93b1e8613cfc
 
-# XTERM dependency
-- name: libXmu
-  sources:
-  - type: archive
-    url: https://www.x.org/releases/individual/lib/libXmu-1.1.2.tar.bz2
-    sha512: eba4e3d10f7d75ba8464881fb69f295a89774a4b37793197d75f3312e3a342b2df8b7e13e3f5c887962704329b5347ff2f3395e229af9dadf46a93b1e8613cfc
+  # XTERM dependency
+  - name: libXaw
+    sources:
+      - type: archive
+        url: https://www.x.org/releases/individual/lib/libXaw-1.0.13.tar.bz2
+        sha512: d768a39f7111802493fa1df1b80d858e4139ceeb883d45ff13ce3b7a0e775a7d2834b7ad157c8330117f04c32f38979795332dd7a119adb2344fcb1aa9cf1e2f
 
-# XTERM dependency
-- name: libXaw
-  sources:
-  - type: archive
-    url: https://www.x.org/releases/individual/lib/libXaw-1.0.13.tar.bz2
-    sha512: d768a39f7111802493fa1df1b80d858e4139ceeb883d45ff13ce3b7a0e775a7d2834b7ad157c8330117f04c32f38979795332dd7a119adb2344fcb1aa9cf1e2f
+  # XTERM dependency
+  - name: libncurses
+    sources:
+      - type: archive
+        url: https://invisible-mirror.net/archives/ncurses/ncurses-6.2.tar.gz
+        sha512: 4c1333dcc30e858e8a9525d4b9aefb60000cfc727bc4a1062bace06ffc4639ad9f6e54f6bdda0e3a0e5ea14de995f96b52b3327d9ec633608792c99a1e8d840d
 
-# XTERM dependency
-- name: libncurses
-  sources:
-  - type: archive
-    url: https://invisible-mirror.net/archives/ncurses/ncurses-6.2.tar.gz
-    sha512: 4c1333dcc30e858e8a9525d4b9aefb60000cfc727bc4a1062bace06ffc4639ad9f6e54f6bdda0e3a0e5ea14de995f96b52b3327d9ec633608792c99a1e8d840d
+  # XTERM
+  - name: XTERM
+    sources:
+      - type: archive
+        url: https://invisible-mirror.net/archives/xterm/xterm-353.tgz
+        sha512: 2ea63858ec069a769f0a25a159d17099044686e20649233631244fed29440fa8beebbd0dd8ccaf4260fb3d26996a49013eeeea7e0c98860e00d2e657019e2611
 
-# XTERM
-- name: XTERM
-  sources:
-  - type: archive
-    url: https://invisible-mirror.net/archives/xterm/xterm-353.tgz
-    sha512: 2ea63858ec069a769f0a25a159d17099044686e20649233631244fed29440fa8beebbd0dd8ccaf4260fb3d26996a49013eeeea7e0c98860e00d2e657019e2611
+  # Dwarf Fortress dependency
+  - name: cairo
+    sources:
+      - type: archive
+        url: https://www.cairographics.org/releases/cairo-1.16.0.tar.xz
+        sha512: 9eb27c4cf01c0b8b56f2e15e651f6d4e52c99d0005875546405b64f1132aed12fbf84727273f493d84056a13105e065009d89e94a8bfaf2be2649e232b82377f
 
-# Dwarf Fortress dependency
-- name: cairo
-  sources:
-  - type: archive
-    url: https://www.cairographics.org/releases/cairo-1.16.0.tar.xz
-    sha512: 9eb27c4cf01c0b8b56f2e15e651f6d4e52c99d0005875546405b64f1132aed12fbf84727273f493d84056a13105e065009d89e94a8bfaf2be2649e232b82377f
+  # Dwarf Fortress dependencies
+  - shared-modules/gtk2/gtk2.json
+  - shared-modules/glu/glu-9.json
+  - shared-modules/SDL/SDL-1.2.15.json
+  - shared-modules/SDL/SDL_image-1.2.12.json
+  - shared-modules/SDL/SDL_ttf-2.0.11.json
+  - modules/tkinter-standalone.json
 
-# Dwarf Fortress dependencies
-- shared-modules/gtk2/gtk2.json
-- shared-modules/glu/glu-9.json
-- shared-modules/SDL/SDL-1.2.15.json
-- shared-modules/SDL/SDL_image-1.2.12.json
-- shared-modules/SDL/SDL_ttf-2.0.11.json
+  # Dwarf Fortress
+  - name: DwarfFortress
+    buildsystem: simple
+    build-commands:
+      - mv launcher.sh /app/bin/
+      - mkdir -p /app/share/lnp/
+      - mv LinuxDwarfPack-0.47.05-r7.tar.bz2 /app/share/lnp/
+      - mv Vettlingr-1.6-1.zip /app/share/lnp/
+    sources:
+      - type: file
+        url: https://github.com/McArcady/lnp-forge/releases/download/0.47.05-r7/LinuxDwarfPack-0.47.05-r7.tar.bz2
+        sha512: 26df6196df04501b2cff574767f9a153fe9f8e41c958571deac495fd0ef03b0d13990ccf8704bb01b6c37d457f5c8a2bf4f2f57b52600a5d45417189bae243a3
+      - type: file
+        # mirror of https://dffd.bay12games.com/download.php?id=14072&f=Vettlingr.zip, version: 1.6-1
+        url: https://github.com/feng1st/dwarf-fortress-lnp-flatpak/releases/download/Vettlingr-1.6-1/Vettlingr-1.6-1.zip
+        sha256: d81c4f6d717def1ea95d4dd9813cca41a5343ee0a5f4c98dd06bc11469f94e92
+      - type: file
+        path: launcher.sh
 
-# java (required for utilities)
-- name: adoptopenjdk-jre-8
-  buildsystem: simple
-  build-commands:
-  - mv bin/* /app/bin/
-  - mv lib/* /app/lib/
-  sources:
-  - type: archive
-    url: https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u242-b08/OpenJDK8U-jre_x64_linux_hotspot_8u242b08.tar.gz
-    sha512: 11dddf75813aa3b88b2bfb2ca89e186cc15601f75ec4f9cbe92c8b60f61438f75a76e45c26bc614eb54de16a584e906f8935cb2146937b96f2970eb89dddea09
+  # so that the user doesn't have to manually select x-term
+  - name: lnp-config
+    buildsystem: simple
+    build-commands:
+      - cp PyLNP.user /app/share/lnp/
+    sources:
+      - type: file
+        path: PyLNP.user
 
-# mono (required for utilities)
-- name: mono
-  sources:
-  - type: archive
-    url: https://download.mono-project.com/sources/mono/mono-6.0.0.334.tar.xz
-    sha512: 7ac473b548f8309cdd781092f786967d2c6f1e3b7ff2da384427d98277456becf1c73cbc488261d48938de1b6d26043c09b0f3fd8d93f8be7d83805dd0f18708
-
-# gtk-sharp (required for utilities)
-- name: gtk-sharp
-  sources:
-  - type: archive
-    url: https://download.mono-project.com/sources/gtk-sharp212/gtk-sharp-2.12.45.tar.gz
-    sha512: 6e11a6a3e8f7f3f9511c674cdcbda15274e597b8e72bc2cdd6970f8906e295849a94108794c11b9aef5408631bf10d2dd7d855d5e5081f58fc790e7194f6159f
-
-# notify-send
-- name: notify-send
-  buildsystem: simple
-  build-commands:
-  - mv notify-send.sh /app/bin/notify-send
-  - mv notify-action.sh /app/bin/notify-action
-  sources:
-  - type: archive
-    url: https://github.com/vlevit/notify-send.sh/archive/v1.0.tar.gz
-    sha512: 092baa65aac20f3c7efa1d816c9306ed701e0f2545847e0db8e3aef00cb01600b5d007918f02bd652dc8f325afbf750e0baf73e2a8a374a71d0198369ae085dd
-
-# Dwarf Fortress
-- name: DwarfFortress
-  buildsystem: simple
-  build-commands:
-  - mv launcher.sh /app/bin/
-  - mkdir -p /app/share/lnp/
-  - mv LinuxLNP-0.47.03-rc1.tar.gz /app/share/lnp/
-  sources:
-  - type: file
-    url: http://dffd.bay12games.com/download.php?id=13244&f=LinuxLNP-0.47.03-rc1.tar.gz
-    sha512: e81013f33bde2ddb0e2d5e4fea98d3ba5f3eeac9bf1a7f2e78639e3f50f903335fac2674a7b4334213b9db805d68bbaf597be704eb21d2657400ce9cfd349c03
-    dest-filename: LinuxLNP-0.47.03-rc1.tar.gz
-  - type: file
-    path: launcher.sh
-
-# custom launcher required for legends browser, as Java's Desktop.browse doesn't seem to work
-- name: legends-browser-launcher
-  buildsystem: simple
-  build-commands:
-  - mkdir -p /app/share/custom/
-  - mv legendsbrowser-launcher.sh /app/share/custom/
-  sources:
-  - type: file
-    path: legendsbrowser-launcher.sh
-
-# so that the user doesn't have to manually select x-term
-- name: lnp-config
-  buildsystem: simple
-  build-commands:
-  - cp PyLNP.user /app/share/lnp/
-  sources:
-  - type: file
-    path: PyLNP.user
-
-- name: desktop-integration
-  buildsystem: simple
-  build-commands:
-  - mkdir -p /app/share/applications /app/share/icons/
-  - mv com.bay12games.DwarfFortress.desktop /app/share/applications/
-  - mv hicolor /app/share/icons/
-  sources:
-  - type: file
-    path: com.bay12games.DwarfFortress.desktop
-  - type: dir
-    path: icons/
+  - name: desktop-integration
+    buildsystem: simple
+    build-commands:
+      - mkdir -p /app/share/applications /app/share/icons/
+      - mv com.bay12games.DwarfFortress.desktop /app/share/applications/
+      - mv hicolor /app/share/icons/
+    sources:
+      - type: file
+        path: com.bay12games.DwarfFortress.desktop
+      - type: dir
+        path: icons/
