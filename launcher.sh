@@ -4,10 +4,10 @@ if [ ! -d "/var/data/lnp/" ]; then
   notify-send "Dwarf Fortress LNP is being extracted. Please wait..."
   mkdir -p /var/data/
   cd /var/data/
-  cp /app/share/lnp/LinuxDwarfPack-0.47.05-r7.tar.bz2 .
-  tar -xvf LinuxDwarfPack-0.47.05-r7.tar.bz2
-  mv LinuxDwarfPack-0.47.05-r7/ lnp/
-  rm LinuxDwarfPack-0.47.05-r7.tar.bz2
+  cp /app/share/lnp/LinuxDwarfPack-0.47.05-r8.tar.bz2 .
+  tar -xvf LinuxDwarfPack-0.47.05-r8.tar.bz2
+  mv LinuxDwarfPack-0.47.05-r8/ lnp/
+  rm LinuxDwarfPack-0.47.05-r8.tar.bz2
   cp /app/share/lnp/Vettlingr-1.6-1.zip .
   unzip Vettlingr-1.6-1.zip
   mv lnp/LNP/Graphics/Vettlingr/raw/onLoad_gfx_Vettlingr.init Vettlingr/raw/

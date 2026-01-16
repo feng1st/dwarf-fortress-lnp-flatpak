@@ -15,6 +15,7 @@ build-options:
 cleanup:
   - /include
   - /lib/pkgconfig
+  - /bin/freetype-config
   - /man
   - /share/man
   - /share/info
@@ -57,6 +58,18 @@ modules:
         url: https://www.cairographics.org/releases/cairo-1.16.0.tar.xz
         sha512: 9eb27c4cf01c0b8b56f2e15e651f6d4e52c99d0005875546405b64f1132aed12fbf84727273f493d84056a13105e065009d89e94a8bfaf2be2649e232b82377f
 
+  # freetype-config
+  # Depended by SDL_ttf, create if not exists.
+  - name: freetype-config
+    buildsystem: simple
+    build-commands:
+      - |
+        if ! command -v freetype-config >/dev/null; then
+            echo '#!/bin/sh' > /app/bin/freetype-config
+            echo 'exec pkg-config freetype2 "$@"' >> /app/bin/freetype-config
+            chmod +x /app/bin/freetype-config
+        fi
+
   # Dwarf Fortress dependencies
   - shared-modules/gtk2/gtk2.json
   - shared-modules/glu/glu-9.json
@@ -71,12 +84,12 @@ modules:
     build-commands:
       - mv launcher.sh /app/bin/
       - mkdir -p /app/share/lnp/
-      - mv LinuxDwarfPack-0.47.05-r7.tar.bz2 /app/share/lnp/
+      - mv LinuxDwarfPack-0.47.05-r8.tar.bz2 /app/share/lnp/
       - mv Vettlingr-1.6-1.zip /app/share/lnp/
     sources:
       - type: file
-        url: https://github.com/McArcady/lnp-forge/releases/download/0.47.05-r7/LinuxDwarfPack-0.47.05-r7.tar.bz2
-        sha512: 26df6196df04501b2cff574767f9a153fe9f8e41c958571deac495fd0ef03b0d13990ccf8704bb01b6c37d457f5c8a2bf4f2f57b52600a5d45417189bae243a3
+        url: https://github.com/McArcady/lnp-forge/releases/download/0.47.05-r8/LinuxDwarfPack-0.47.05-r8.tar.bz2
+        sha512: 120cd43007629f2f34371205606e13366e40d6ba4ab1ab8413234367ce801e4dc0b80a0e6a2d7e15aa43acc4a27928a40ba51d7cd2255f14e2d6ef41333f9f41
       - type: file
         # mirror of https://dffd.bay12games.com/download.php?id=14072&f=Vettlingr.zip, version: 1.6-1
         url: https://github.com/feng1st/dwarf-fortress-lnp-flatpak/releases/download/Vettlingr-1.6-1/Vettlingr-1.6-1.zip
